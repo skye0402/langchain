@@ -409,8 +409,11 @@ class SQLDatabase:
                     # If anybody using Sybase SQL anywhere database then it should not
                     # go to else condition. It should be same as mssql.
                     pass
-                else:  # postgresql and other compatible dialects
+                elif self.dialect in ["postgresql"]: # postgresql and other compatible dialects
                     connection.exec_driver_sql("SET search_path TO %s", (self._schema,))
+                else:
+                    # Other DB systems: We assume they can't handle setting a search path.
+                    pass                    
             cursor = connection.execute(text(command))
             if cursor.returns_rows:
                 if fetch == "all":
